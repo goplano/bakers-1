@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Baker's Percentages</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<p>Weights in grams</p>
+<form action="">
+    <div>
+        <label for="totalweight">Total weight: </label>
+        <input type="text" name="totalweight" id="totalweight">
+    </div>
+    <div>
+        <label for="totalFlour">Total flour: </label>
+        <input type="text" name="totalFlour" id="totalFlour">
+    </div>
+    <div>
+        <label for="totalWater">Total water: </label>
+        <input type="text" name="totalWater" id="totalWater">
+    </div>
+    <div>
+        <label for="ptotalWater">Total hydration: </label>
+        <input type="text" name="ptotalWater" id="ptotalWater">
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <td>Ingredient</td>
+            <td>Grams</td>
+            <td>%</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-type="flour">
+            <td><label for="mainflour"></label>flour</td>
+            <td><input type="text" id="mainflour"  name="flour[]"></td>
+            <td><label for="pmainflour"></label><input type="text" id="pmainflour" name="pflour[]"></td>
+        </tr>
+        <tr data-type="flour">
+            <td><label for="addlflour">flour</label></td>
+            <td><input type="text" id="addlflour" name="flour[]"></td>
+            <td><label for="paddlflour"></label><input type="text" id="paddlflour" name="pflour[]"></td>
+        </tr>
+        <tr data-type="water">
+            <td><label for="water">water</label></td>
+            <td><input type="text" id="water" name="water"></td>
+            <td><label for="pwater"></label><input type="text" id="pwater" name="pwater"></td>
+        </tr>
+        <tr data-type="salt">
+            <td><label for="salt">salt</label></td>
+            <td><input type="text" id="salt" name="salt"></td>
+            <td><label for="psalt"></label><input type="text" id="psalt" name="psalt"></td>
+        </tr>
+        <tr data-type="starter">
+            <td><label for="starter">starter</label></td>
+            <td><input type="text" id="starter" name="starter"></td>
+            <td><label for="pstarter"></label><input type="text" id="pstarter" name="pstarter"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p>
+        * Assumes 100% hydration starter
+    </p>
+</form>
+</body>
+<script>
+    window.onload = () => {
+        document.querySelectorAll('input').forEach((elem) => {
+            elem.onblur = doGramCalculations
+        })
+    }
+
+    // return a Node List
+    function getAllFlourInputs() {
+        return document.querySelectorAll("input[name='flour[]']")
+    }
+
+    function getAllSalt() {
+        return document.querySelectorAll("input[name='salt']")
+    }
+
+    function sumNodeList(myList) {
+        const len = myList.length
+        let sum = 0;
+        for (let i = len; i > 0; i--) {
+            const val = myList[i - 1].value;
+            if (Number.isInteger(parseInt(val)))
+                sum += parseInt(val);
+        }
+        return sum;
+    }
+
+    function getTotalAddedFlour() {
+        return sumNodeList(getAllFlourInputs())
+    }
+
+    function getTotalFlour() {
+        const addedFlour = getTotalAddedFlour();
+        const levainFlour = getLevainPart()
+        const elem = document.querySelector('#totalFlour');
+        elem.value = addedFlour + levainFlour;
+        return addedFlour + levainFlour;
+    }
+
+    function getTotalWater() {
+        let elem = document.querySelector('#water');
+        let addedWater = elem.value;
+        const levainWater = getLevainPart()
+        if (!Number.isInteger(parseInt(addedWater))) {
+            addedWater = 0;
+        } else {
+            addedWater = parseInt(addedWater);
+        }
+        elem = document.querySelector('#totalWater');
+        elem.value = addedWater + levainWater;
+        return addedWater + levainWater;
+    }
+
+    function getLevainPart() {
+        return  sumNodeList(document.querySelectorAll("input[name='starter']")) / 2;
+    }
+
+    function updatePercentage(name, totalFlour, decimals = 0) {
+        const name1 = `#${name}`;
+        const name2 = `#p${name}`;
+        const elem = document.querySelector(name1);
+        const elem2 = document.querySelector(name2);
+        elem2.value = parseFloat(elem.value / totalFlour * 100).toFixed(decimals);
+    }
+
+    function computePercentages(totalFlour) {
+        updatePercentage('mainflour', totalFlour);
+        updatePercentage('addlflour', totalFlour);
+        updatePercentage('water', totalFlour);
+        updatePercentage('salt', totalFlour);
+        updatePercentage('starter', totalFlour);
+    }
+
+    function doGramCalculations() {
+        const totalAddedFlour = getTotalAddedFlour();
+        const totalFlour = getTotalFlour();
+        const totalWater = getTotalWater();
+        computePercentages(totalAddedFlour);
+        updatePercentage('totalWater', totalFlour, 2);
+        const totalWeight = totalFlour + totalWater + sumNodeList(getAllSalt());
+        const elem = document.querySelector('#totalweight');
+        elem.value = totalWeight;
+    }
+</script>
+</html>
