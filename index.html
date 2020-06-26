@@ -37,43 +37,80 @@
         <tbody>
         <tr data-type="flour">
             <td><label for="mainflour"></label>flour</td>
-            <td><input type="text" id="mainflour"  name="flour[]"></td>
-            <td><label for="pmainflour"></label><input type="text" id="pmainflour" name="pflour[]"></td>
-        </tr>
-        <tr data-type="flour">
+            <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
+            <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents" name="pflour[]">
+            </td>
+        </tr><tr>
             <td><label for="addlflour">flour</label></td>
-            <td><input type="text" id="addlflour" name="flour[]"></td>
-            <td><label for="paddlflour"></label><input type="text" id="paddlflour" name="pflour[]"></td>
+            <td><input type="text" id="addlflour" data-type="weights" name="flour[]"></td>
+            <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents" name="pflour[]">
+            </td>
         </tr>
         <tr data-type="water">
             <td><label for="water">water</label></td>
-            <td><input type="text" id="water" name="water"></td>
-            <td><label for="pwater"></label><input type="text" id="pwater" name="pwater"></td>
+            <td><input type="text" id="water" data-type="weights" name="water"></td>
+            <td><label for="pwater"></label><input type="text" id="pwater" data-type="percents" name="pwater"></td>
         </tr>
         <tr data-type="salt">
             <td><label for="salt">salt</label></td>
-            <td><input type="text" id="salt" name="salt"></td>
-            <td><label for="psalt"></label><input type="text" id="psalt" name="psalt"></td>
+            <td><input type="text" id="salt" data-type="weights" name="salt"></td>
+            <td><label for="psalt"></label><input type="text" id="psalt" data-type="percents" name="psalt"></td>
         </tr>
         <tr data-type="starter">
             <td><label for="starter">starter</label></td>
-            <td><input type="text" id="starter" name="starter"></td>
-            <td><label for="pstarter"></label><input type="text" id="pstarter" name="pstarter"></td>
+            <td><input type="text" id="starter" data-type="weights" name="starter"></td>
+            <td><label for="pstarter"></label><input data-type="percents" id="pstarter" name="pstarter" type="text">
+            </td>
         </tr>
         </tbody>
     </table>
     <p>
         * Assumes 100% hydration starter
     </p>
+    <button id="btnClear">Clear All</button>
 </form>
+<h1>Instructions</h1>
+<ol>
+    <li>mix flour and water - rest 30 mins</li>
+    <li>mix in starter - rest 30 minutes</li>
+    <li>mix in salt - rest 30 minutes</li>
+    <li>stretch and fold 1 - rest 30 minutes</li>
+    <li>stretch and fold 2 - rest 30 minutes</li>
+    <li>stretch and fold 3</li>
+    <li>bulk fermentation -  3 - 3.5  hours</li>
+    <li>pre-shape - reset 20 minutes</li>
+    <li>final shape + secure bottom seam</li>
+    <li>proof for 30 minutes</li>
+    <li>retard in fridge - 16 hours</li>
+    <li>pre-heat oven to 500</li>
+    <li>bake lid on 30 minutes</li>
+    <li>remove lid bake for 30 more minutes</li>
+    <li>let cool for at least 1 hour</li>
+</ol>
 </body>
 <script>
     window.onload = () => {
-        document.querySelectorAll('input').forEach((elem) => {
+        document.querySelectorAll('input[data-type=weights]').forEach((elem) => {
             elem.onblur = doGramCalculations
         })
+        document.querySelector('#btnClear').addEventListener("click", function (event) {
+            document.querySelectorAll('input').forEach((elem) => {
+                elem.value = null;
+            });
+            event.preventDefault();
+        })
+        setWeightsInput();
     }
-
+    function setPercentsInput() {
+        document.querySelectorAll('input[data-type=weights]').forEach((elem) => {
+            elem.setAttribute('readonly','readonly')
+        })
+    }
+    function setWeightsInput() {
+        document.querySelectorAll('input[data-type=percents]').forEach((elem) => {
+            elem.setAttribute('readonly','readonly')
+        })
+    }
     // return a Node List
     function getAllFlourInputs() {
         return document.querySelectorAll("input[name='flour[]']")
@@ -121,15 +158,17 @@
     }
 
     function getLevainPart() {
-        return  sumNodeList(document.querySelectorAll("input[name='starter']")) / 2;
+        return sumNodeList(document.querySelectorAll("input[name='starter']")) / 2;
     }
 
     function updatePercentage(name, totalFlour, decimals = 0) {
-        const name1 = `#${name}`;
-        const name2 = `#p${name}`;
-        const elem = document.querySelector(name1);
-        const elem2 = document.querySelector(name2);
-        elem2.value = parseFloat(elem.value / totalFlour * 100).toFixed(decimals);
+        const name1 = `#${name}`,
+            name2 = `#p${name}`,
+            elem = document.querySelector(name1),
+            elem2 = document.querySelector(name2);
+        if(Number.isInteger(parseInt(elem.value)) ) {
+            elem2.value = parseFloat(parseInt(elem.value) / totalFlour * 100).toFixed(decimals);
+        }
     }
 
     function computePercentages(totalFlour) {
