@@ -6,6 +6,7 @@ window.onload = () => {
         form.clearInputs(form.allInputFields)
         event.preventDefault();
     })
+    window.form = form;
 }
 
 

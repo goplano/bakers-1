@@ -28,26 +28,31 @@ export default class Sourdough {
     get totalWeight() {
         return this.totalFlour + this.totalWater + this.salt;
     }
+
     get percentMainFlour() {
         if (this.totalFlour > 0)
             return this.mainFlour / this.totalFlour;
         return 0;
     }
+
     get percentAddlFlour() {
         if (this.totalFlour > 0)
             return this.addlFlour / this.totalFlour;
         return 0;
     }
+
     get percentWater() {
         if (this.totalFlour > 0)
             return this.water / this.totalFlour;
         return 0;
     }
+
     get percentSalt() {
         if (this.totalFlour > 0)
             return this.salt / this.totalFlour;
         return 0;
     }
+
     get percentStarter() {
         if (this.totalFlour > 0)
             return this.starter / this.totalFlour;

@@ -107,3 +107,51 @@ test('gram calculations will update totals fields',() => {
     expect(form.totalWeightInput.value).toBe("1060");
     expect(form.totalHydrationInput.value).toBe("56");
 })
+test('you can switch to percentage to calculate weights',() => {
+    document.body.innerHTML = sampleHTML;
+    const form =  new SourdoughForm(new Sourdough());
+    expect(form.totalFlourInput.getAttribute('readonly')).toBe('readonly')
+    expect(form.totalHydrationInput.getAttribute('readonly')).toBe('readonly')
+    expect(form.computationTypeDiv.innerHTML).toBe('Calculating weights from percentages')
+    form.doGramCalculations();
+    expect(form.totalFlourInput.value).toBe("675");
+    expect(form.totalWaterInput.value).toBe("375");
+    expect(form.totalWeightInput.value).toBe("1060");
+    expect(form.totalHydrationInput.value).toBe("56");
+
+    form.setPercentsInput();
+    // weight inputs should be readonly
+    form.weightInputs.forEach((elem) => {
+        expect(elem.getAttribute('readonly')).toBe('readonly')
+    })
+    // percentage inputs should be writable
+    form.percentInputs.forEach((elem) => {
+        expect(elem.getAttribute('readonly')).not.toBe('readonly')
+    })
+    // total weight should be writable
+    // total hydration should be writable
+    expect(form.totalFlourInput.getAttribute('readonly')).not.toBe('readonly')
+    expect(form.totalHydrationInput.getAttribute('readonly')).not.toBe('readonly')
+
+
+    expect(form.totalFlourInput.value).toBe("675");
+    expect(form.totalWaterInput.value).toBe("375");
+    expect(form.totalWeightInput.value).toBe("1060");
+    expect(form.totalHydrationInput.value).toBe("56");
+    expect(form.pMainFlourInput.value).toBe("74");
+    expect(form.pStarterInput.value).toBe("22");
+    expect(form.pAddlFlourInput.value).toBe("15");
+    expect(form.pWaterInput.value).toBe("44");
+    expect(form.pSaltInput.value).toBe("1");
+    expect(form.computationTypeDiv.innerHTML).toBe('Calculating percentages from weight')
+
+})
+ test('it will skip over non-numeric values',() => {
+     document.body.innerHTML = sampleHTML;
+     const form =  new SourdoughForm(new Sourdough());
+     form.mainFlourInput.value = "twelve"
+     form.addlFlourInput.value = "100"
+     form.starterInput.value = "yeast"
+     form.doGramCalculations();
+     expect(form.totalFlourInput.value).toBe("100");
+ })

@@ -11,6 +11,16 @@ export default class SourdoughForm {
     totalWaterInput = null;
     totalWeightInput = null;
     computationTypeDiv = null;
+    waterInput = null;
+    mainFlourInput = null;
+    addlFlourInput = null;
+    saltInput = null;
+    startInput = null;
+    pWaterInput = null;
+    pMainFlourInput = null;
+    pAddlFlourInput = null;
+    pSaltInput = null;
+    pStartInput = null;
 // buttons
     clearBtn = null;
     sourdough = null;
@@ -26,6 +36,11 @@ export default class SourdoughForm {
         salt: '#salt',
         water: '#water',
         starter: '#starter',
+        pMainFlour: '#pmainflour',
+        pAddlFlour: '#paddlflour',
+        pSalt: '#psalt',
+        pWater: '#pwater',
+        pStarter: '#pstarter',
         totalWater: '#totalWater',
         totalFlour: '#totalFlour',
         totalWeight: '#totalweight',
@@ -48,6 +63,17 @@ export default class SourdoughForm {
         this.totalHydrationInput = document.querySelector(this.selectors.totalHydration);
         this.computationTypeDiv = document.querySelector(this.selectors.computationTypeDiv);
 
+        this.waterInput = document.querySelector(this.selectors.water);
+        this.mainFlourInput = document.querySelector(this.selectors.mainFlour);
+        this.addlFlourInput = document.querySelector(this.selectors.addlFlour);
+        this.saltInput = document.querySelector(this.selectors.salt);
+        this.starterInput = document.querySelector(this.selectors.starter);
+
+        this.pWaterInput = document.querySelector(this.selectors.pWater);
+        this.pMainFlourInput = document.querySelector(this.selectors.pMainFlour);
+        this.pAddlFlourInput = document.querySelector(this.selectors.pAddlFlour);
+        this.pSaltInput = document.querySelector(this.selectors.pSalt);
+        this.pStarterInput = document.querySelector(this.selectors.pStarter);
 
         this.getWeightsFromForm(sd);
         this.setWeightsInput();
@@ -109,9 +135,13 @@ export default class SourdoughForm {
 
     setPercentsInput() {
         this.setComputationTypeGrams();
+        this.setReadWrite(this.totalWeightInput);
+        this.setReadWrite(this.totalWaterInput);
+        this.setReadWrite(this.totalFlourInput);
+        this.setReadWrite(this.totalHydrationInput);
         this.percentInputs.forEach((elem) => {
             this.setReadWrite(elem);
-            // elem.onblur = doPercentCalculations
+            elem.onblur = this.doPercentCalculations
         })
         this.weightInputs.forEach((elem) => {
             this.setReadOnly(elem);
@@ -140,7 +170,14 @@ export default class SourdoughForm {
         // update tot flour
         this.totalFlourInput.value = this.sourdough.totalFlour
         // update total hydration
-        this.totalHydrationInput.value =  parseFloat(this.sourdough.totalHydration * 100 ).toFixed(0); ;
+        this.totalHydrationInput.value =  parseFloat(this.sourdough.totalHydration * 100 ).toFixed(0);
+        //update individual percentages
+        this.pWaterInput.value  = parseFloat(this.sourdough.percentWater * 100 ).toFixed(0);
+        this.pMainFlourInput.value  = parseFloat(this.sourdough.percentMainFlour * 100 ).toFixed(0);
+        this.pAddlFlourInput.value  = parseFloat(this.sourdough.percentAddlFlour * 100 ).toFixed(0);
+        this.pStarterInput.value  = parseFloat(this.sourdough.percentStarter * 100 ).toFixed(0);
+        this.pSaltInput.value  = parseFloat(this.sourdough.percentSalt * 100 ).toFixed(0);
+
     };
 
 
