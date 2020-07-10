@@ -3,28 +3,46 @@
 export default class SourdoughForm {
     allInputFields = null
 // field lists
-    weightInputs = null;
-    percentInputs = null;
-    flourInputs = null;
-    totalHydrationInput = null;
-    totalFlourInput = null;
-    totalWaterInput = null;
-    totalWeightInput = null;
+//     weightInputs = null;
+//     percentInputs = null;
+//     flourInputs = null;
+//     totalHydrationInput = null;
+//     totalFlourInput = null;
+//     totalWaterInput = null;
     computationTypeDiv = null;
-    waterInput = null;
-    mainFlourInput = null;
-    addlFlourInput = null;
-    saltInput = null;
-    startInput = null;
-    pWaterInput = null;
-    pMainFlourInput = null;
-    pAddlFlourInput = null;
-    pSaltInput = null;
-    pStartInput = null;
+    // waterInput = null;
+    // mainFlourInput = null;
+    // addlFlourInput = null;
+    // saltInput = null;
+    // startInput = null;
+    // pWaterInput = null;
+    // pMainFlourInput = null;
+    // pAddlFlourInput = null;
+    // pSaltInput = null;
+    // pStartInput = null;
 // buttons
     clearBtn = null;
     sourdough = null;
-
+// input fields
+    inputFields = {
+        weights: null,
+        percents: null,
+        flours: null,
+        mainFlour: null,
+        addlFlour: null,
+        salt: null,
+        water: null,
+        starter: null,
+        pMainFlour: null,
+        pAddlFlour: null,
+        pSalt: null,
+        pWater: null,
+        pStarter: null,
+        totalWater: null,
+        totalFlour: null,
+        totalWeight: null,
+        totalHydration: null,
+    }
 // selectors
 
     selectors = {
@@ -52,28 +70,30 @@ export default class SourdoughForm {
     constructor(sd) {
         this.sourdough = sd;
 
-        this.weightInputs = document.querySelectorAll(this.selectors.weights);
-        this.percentInputs = document.querySelectorAll(this.selectors.percents);
-        this.flourInputs = document.querySelectorAll(this.selectors.flours);
+        this.inputFields.weights = document.querySelectorAll(this.selectors.weights);
+        this.inputFields.percents = document.querySelectorAll(this.selectors.percents);
+        this.inputFields.flours = document.querySelectorAll(this.selectors.flours);
         this.clearBtn = document.querySelector(this.selectors.clearBtn);
         this.allInputFields = document.querySelectorAll('input');
-        this.totalFlourInput = document.querySelector(this.selectors.totalFlour);
-        this.totalWaterInput = document.querySelector(this.selectors.totalWater);
-        this.totalWeightInput = document.querySelector(this.selectors.totalWeight);
-        this.totalHydrationInput = document.querySelector(this.selectors.totalHydration);
+
+        this.inputFields.totalFlour = document.querySelector(this.selectors.totalFlour);
+        this.inputFields.totalWater = document.querySelector(this.selectors.totalWater);
+        this.inputFields.totalWeight = document.querySelector(this.selectors.totalWeight);
+        this.inputFields.totalHydration = document.querySelector(this.selectors.totalHydration);
+
         this.computationTypeDiv = document.querySelector(this.selectors.computationTypeDiv);
 
-        this.waterInput = document.querySelector(this.selectors.water);
-        this.mainFlourInput = document.querySelector(this.selectors.mainFlour);
-        this.addlFlourInput = document.querySelector(this.selectors.addlFlour);
-        this.saltInput = document.querySelector(this.selectors.salt);
-        this.starterInput = document.querySelector(this.selectors.starter);
+        this.inputFields.water = document.querySelector(this.selectors.water);
+        this.inputFields.mainFlour = document.querySelector(this.selectors.mainFlour);
+        this.inputFields.addlFlour = document.querySelector(this.selectors.addlFlour);
+        this.inputFields.salt = document.querySelector(this.selectors.salt);
+        this.inputFields.starter = document.querySelector(this.selectors.starter);
 
-        this.pWaterInput = document.querySelector(this.selectors.pWater);
-        this.pMainFlourInput = document.querySelector(this.selectors.pMainFlour);
-        this.pAddlFlourInput = document.querySelector(this.selectors.pAddlFlour);
-        this.pSaltInput = document.querySelector(this.selectors.pSalt);
-        this.pStarterInput = document.querySelector(this.selectors.pStarter);
+        this.inputFields.pWater = document.querySelector(this.selectors.pWater);
+        this.inputFields.pMainFlour = document.querySelector(this.selectors.pMainFlour);
+        this.inputFields.pAddlFlour = document.querySelector(this.selectors.pAddlFlour);
+        this.inputFields.pSalt = document.querySelector(this.selectors.pSalt);
+        this.inputFields.pStarter = document.querySelector(this.selectors.pStarter);
 
         this.getWeightsFromForm(sd);
         this.setWeightsInput();
@@ -117,16 +137,16 @@ export default class SourdoughForm {
 
 
     setWeightsInput() {
-        this.setReadOnly(this.totalWeightInput);
-        this.setReadOnly(this.totalWaterInput);
-        this.setReadOnly(this.totalFlourInput);
-        this.setReadOnly(this.totalHydrationInput);
+        this.setReadOnly(this.inputFields.totalWeight);
+        this.setReadOnly(this.inputFields.totalWater);
+        this.setReadOnly(this.inputFields.totalFlour);
+        this.setReadOnly(this.inputFields.totalHydration);
         this.setComputationTypeWeights()
-        this.percentInputs.forEach((elem) => {
+        this.inputFields.percents.forEach((elem) => {
             this.setReadOnly(elem);
             // TODO - remove event handler?
         })
-        this.weightInputs.forEach((elem) => {
+        this.inputFields.weights.forEach((elem) => {
             this.setReadWrite(elem);
             elem.onblur = this.doGramCalculations
         })
@@ -135,15 +155,16 @@ export default class SourdoughForm {
 
     setPercentsInput() {
         this.setComputationTypeGrams();
-        this.setReadWrite(this.totalWeightInput);
-        this.setReadWrite(this.totalWaterInput);
-        this.setReadWrite(this.totalFlourInput);
-        this.setReadWrite(this.totalHydrationInput);
-        this.percentInputs.forEach((elem) => {
+
+        this.setReadWrite(this.inputFields.totalWeight);
+        this.setReadWrite(this.inputFields.totalWater);
+        this.setReadWrite(this.inputFields.totalFlour);
+        this.setReadWrite(this.inputFields.totalHydration);
+        this.inputFields.percents.forEach((elem) => {
             this.setReadWrite(elem);
             elem.onblur = this.doPercentCalculations
         })
-        this.weightInputs.forEach((elem) => {
+        this.inputFields.weights.forEach((elem) => {
             this.setReadOnly(elem);
         })
     };
@@ -164,19 +185,19 @@ export default class SourdoughForm {
         // update main, addl, water, salt and starter
         this.getWeightsFromForm(this.sourdough);
         // update total weight
-        this.totalWeightInput.value = this.sourdough.totalWeight;
+        this.inputFields.totalWeight.value = this.sourdough.totalWeight;
         // update total water
-        this.totalWaterInput.value = this.sourdough.totalWater;
+        this.inputFields.totalWater.value = this.sourdough.totalWater;
         // update tot flour
-        this.totalFlourInput.value = this.sourdough.totalFlour
+        this.inputFields.totalFlour.value = this.sourdough.totalFlour
         // update total hydration
-        this.totalHydrationInput.value =  parseFloat(this.sourdough.totalHydration * 100 ).toFixed(0);
+        this.inputFields.totalHydration.value =  parseFloat(this.sourdough.totalHydration * 100 ).toFixed(0);
         //update individual percentages
-        this.pWaterInput.value  = parseFloat(this.sourdough.percentWater * 100 ).toFixed(0);
-        this.pMainFlourInput.value  = parseFloat(this.sourdough.percentMainFlour * 100 ).toFixed(0);
-        this.pAddlFlourInput.value  = parseFloat(this.sourdough.percentAddlFlour * 100 ).toFixed(0);
-        this.pStarterInput.value  = parseFloat(this.sourdough.percentStarter * 100 ).toFixed(0);
-        this.pSaltInput.value  = parseFloat(this.sourdough.percentSalt * 100 ).toFixed(0);
+        this.inputFields.pWater.value  = parseFloat(this.sourdough.percentWater * 100 ).toFixed(0);
+        this.inputFields.pMainFlour.value  = parseFloat(this.sourdough.percentMainFlour * 100 ).toFixed(0);
+        this.inputFields.pAddlFlour.value  = parseFloat(this.sourdough.percentAddlFlour * 100 ).toFixed(0);
+        this.inputFields.pStarter.value  = parseFloat(this.sourdough.percentStarter * 100 ).toFixed(0);
+        this.inputFields.pSalt.value  = parseFloat(this.sourdough.percentSalt * 100 ).toFixed(0);
 
     };
 

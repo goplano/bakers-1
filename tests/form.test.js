@@ -64,30 +64,30 @@ const sampleHTML = `
 test('can find all html elements on initialize', () => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
-    expect(form.weightInputs.length).toBe(5);
-    expect(form.percentInputs.length).toBe(5);
-    const percentElement = form.percentInputs[0];
+    expect(form.inputFields.weights.length).toBe(5);
+    expect(form.inputFields.percents.length).toBe(5);
+    const percentElement = form.inputFields.percents[0];
     expect(percentElement.getAttribute('data-type')).toBe('percents')
-    const weightElement = form.weightInputs[0];
+    const weightElement = form.inputFields.weights[0];
     expect(weightElement.getAttribute('data-type')).toBe('weights')
-    expect(form.flourInputs.length).toBe(2)
+    expect(form.inputFields.flours.length).toBe(2)
 })
 test('it can sum flour values', () => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
-    expect(form.getSumOrValue(form.flourInputs)).toBe(600);
+    expect(form.getSumOrValue(form.inputFields.flours)).toBe(600);
 })
 test('it can sum input values even if empty', () => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
-    expect(form.getSumOrValue(form.weightInputs)).toBe(1060);
+    expect(form.getSumOrValue(form.inputFields.weights)).toBe(1060);
 })
 test('it can clear values on the form', () => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
-    expect(form.getSumOrValue(form.weightInputs)).toBe(1060);
+    expect(form.getSumOrValue(form.inputFields.weights)).toBe(1060);
     form.clearInputs(form.allInputFields);
-    expect(form.getSumOrValue(form.weightInputs)).toBe(0);
+    expect(form.getSumOrValue(form.inputFields.weights)).toBe(0);
 })
 test('initialization will populate the sourdough values',() => {
     document.body.innerHTML = sampleHTML;
@@ -102,56 +102,56 @@ test('gram calculations will update totals fields',() => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
     form.doGramCalculations();
-    expect(form.totalFlourInput.value).toBe("675");
-    expect(form.totalWaterInput.value).toBe("375");
-    expect(form.totalWeightInput.value).toBe("1060");
-    expect(form.totalHydrationInput.value).toBe("56");
+    expect(form.inputFields.totalFlour.value).toBe("675");
+    expect(form.inputFields.totalWater.value).toBe("375");
+    expect(form.inputFields.totalWeight.value).toBe("1060");
+    expect(form.inputFields.totalHydration.value).toBe("56");
 })
 test('you can switch to percentage to calculate weights',() => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm(new Sourdough());
-    expect(form.totalFlourInput.getAttribute('readonly')).toBe('readonly')
-    expect(form.totalHydrationInput.getAttribute('readonly')).toBe('readonly')
+    expect(form.inputFields.totalFlour.getAttribute('readonly')).toBe('readonly')
+    expect(form.inputFields.totalHydration.getAttribute('readonly')).toBe('readonly')
     expect(form.computationTypeDiv.innerHTML).toBe('Calculating weights from percentages')
     form.doGramCalculations();
-    expect(form.totalFlourInput.value).toBe("675");
-    expect(form.totalWaterInput.value).toBe("375");
-    expect(form.totalWeightInput.value).toBe("1060");
-    expect(form.totalHydrationInput.value).toBe("56");
+    expect(form.inputFields.totalFlour.value).toBe("675");
+    expect(form.inputFields.totalWater.value).toBe("375");
+    expect(form.inputFields.totalWeight.value).toBe("1060");
+    expect(form.inputFields.totalHydration.value).toBe("56");
 
     form.setPercentsInput();
     // weight inputs should be readonly
-    form.weightInputs.forEach((elem) => {
+    form.inputFields.weights.forEach((elem) => {
         expect(elem.getAttribute('readonly')).toBe('readonly')
     })
     // percentage inputs should be writable
-    form.percentInputs.forEach((elem) => {
+    form.inputFields.percents.forEach((elem) => {
         expect(elem.getAttribute('readonly')).not.toBe('readonly')
     })
     // total weight should be writable
     // total hydration should be writable
-    expect(form.totalFlourInput.getAttribute('readonly')).not.toBe('readonly')
-    expect(form.totalHydrationInput.getAttribute('readonly')).not.toBe('readonly')
+    expect(form.inputFields.totalFlour.getAttribute('readonly')).not.toBe('readonly')
+    expect(form.inputFields.totalHydration.getAttribute('readonly')).not.toBe('readonly')
 
 
-    expect(form.totalFlourInput.value).toBe("675");
-    expect(form.totalWaterInput.value).toBe("375");
-    expect(form.totalWeightInput.value).toBe("1060");
-    expect(form.totalHydrationInput.value).toBe("56");
-    expect(form.pMainFlourInput.value).toBe("74");
-    expect(form.pStarterInput.value).toBe("22");
-    expect(form.pAddlFlourInput.value).toBe("15");
-    expect(form.pWaterInput.value).toBe("44");
-    expect(form.pSaltInput.value).toBe("1");
+    expect(form.inputFields.totalFlour.value).toBe("675");
+    expect(form.inputFields.totalWater.value).toBe("375");
+    expect(form.inputFields.totalWeight.value).toBe("1060");
+    expect(form.inputFields.totalHydration.value).toBe("56");
+    expect(form.inputFields.pMainFlour.value).toBe("74");
+    expect(form.inputFields.pStarter.value).toBe("22");
+    expect(form.inputFields.pAddlFlour.value).toBe("15");
+    expect(form.inputFields.pWater.value).toBe("44");
+    expect(form.inputFields.pSalt.value).toBe("1");
     expect(form.computationTypeDiv.innerHTML).toBe('Calculating percentages from weight')
 
 })
  test('it will skip over non-numeric values',() => {
      document.body.innerHTML = sampleHTML;
      const form =  new SourdoughForm(new Sourdough());
-     form.mainFlourInput.value = "twelve"
-     form.addlFlourInput.value = "100"
-     form.starterInput.value = "yeast"
+     form.inputFields.mainFlour.value = "twelve"
+     form.inputFields.addlFlour.value = "100"
+     form.inputFields.starter.value = "yeast"
      form.doGramCalculations();
-     expect(form.totalFlourInput.value).toBe("100");
+     expect(form.inputFields.totalFlour.value).toBe("100");
  })
