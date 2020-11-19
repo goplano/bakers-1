@@ -2,17 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baker's Percentages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
+        body {
+            color: #eee;
+            background-color: darkslategray;
+            font-family: 'Roboto', cursive;
+            font-size: 18px;
+        }
 
+        input {
+            width: 4em;
+            border-style: none;
+            border-radius: 4px;
+        }
+
+        input[readonly=readonly] {
+            background-color: #ddd;
+            border-color: #ddd;
+            border-style: none;
+            border-radius: 4px;
+        }
+
+        label {
+            width: 7em;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        td label {
+            display: inline;
+            width: auto;
+        }
+
+        button {
+            font-family: 'Roboto', cursive;
+            border-radius: 4px;
+            border: none;
+            background-color: darkslategray;
+            color: #eee;
+            padding: 3px 4px;
+            box-shadow: 2px 2px 3px #c2c6c9,
+            -2px -2px 6px #ffffff;
+        }
+        .toggle {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 62px;
+            height: 32px;
+            display: inline-block;
+            position: relative;
+            border-radius: 50px;
+            overflow: hidden;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            background-color: #707070;
+            transition: background-color ease 0.3s;
+        }
+
+        .toggle:before {
+            content: "yes  no";
+            display: block;
+            position: absolute;
+            z-index: 2;
+            width: 28px;
+            height: 28px;
+            background: #fff;
+            left: 2px;
+            top: 2px;
+            border-radius: 50%;
+            font: 10px/28px Helvetica;
+            /*text-transform: uppercase;*/
+            font-weight: bold;
+            text-indent: -22px;
+            word-spacing: 37px;
+            color: #fff;
+            text-shadow: -1px -1px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+        }
+
+        .toggle:checked {
+            background-color: #4CD964;
+        }
+
+        .toggle:checked:before {
+            left: 32px;
+        }
+        .switch-field {
+            display: flex;
+
+            overflow: hidden;
+        }
+
+        .switch-field input {
+            position: absolute !important;
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            width: 1px;
+            border: 0;
+            overflow: hidden;
+        }
+
+        .switch-field label {
+            background-color: #e4e4e4;
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 14px;
+            line-height: 1;
+            text-align: center;
+            padding: 8px 16px;
+            margin-right: -1px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .switch-field label:hover {
+            cursor: pointer;
+        }
+
+        .switch-field input:checked + label {
+            background-color: #a5dc86;
+            box-shadow: none;
+        }
+
+        .switch-field label:first-of-type {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .switch-field label:last-of-type {
+            border-radius: 0 4px 4px 0;
+        }
     </style>
 </head>
 <body>
 <p>Weights in grams</p>
-<form action="">
+
+<span id="computationType">Not set</span>
+<div class="switch-field">
+    <input type="radio" id="btnWeights" name="calctype" value="weights" checked/>
+    <label for="btnWeights">Weights</label>
+    <input type="radio" id="btnPercents" name="calctype" value="percents" />
+    <label for="btnPercents">Percents</label>
+</div>
+<form action="#" onsubmit="return false;">
     <div>
         <label for="totalweight">Total weight: </label>
         <input type="text" name="totalweight" id="totalweight">
+    </div>
+    <div>
+        <label for="pTotalWater">Total hydration: </label>
+        <input type="text" name="pTotalWater" id="pTotalWater">
     </div>
     <div>
         <label for="totalFlour">Total flour: </label>
@@ -22,10 +171,7 @@
         <label for="totalWater">Total water: </label>
         <input type="text" name="totalWater" id="totalWater">
     </div>
-    <div>
-        <label for="ptotalWater">Total hydration: </label>
-        <input type="text" name="ptotalWater" id="ptotalWater">
-    </div>
+
     <table>
         <thead>
         <tr>
@@ -40,8 +186,9 @@
             <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
             <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents" name="pflour[]">
             </td>
-        </tr><tr>
-            <td><label for="addlflour">flour</label></td>
+        </tr>
+        <tr id="vwg-input-row">
+            <td><label for="addlflour">VWG</label></td>
             <td><input type="text" id="addlflour" data-type="weights" name="flour[]"></td>
             <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents" name="pflour[]">
             </td>
@@ -67,8 +214,13 @@
     <p>
         * Assumes 100% hydration starter
     </p>
-    <button id="btnClear">Clear All</button>
+
 </form>
+<div>
+    <input id="btnUseVitalWheatGluten" class="toggle" type="checkbox" name="vwg" />
+    <label for="btnUseVitalWheatGluten" title="Vital wheat gluten adds protein and a little more structure.">Use Vital Wheat Gluten</label>
+</div>
+
 <h1>Instructions</h1>
 <ol>
     <li>mix flour and water - rest 30 mins</li>
@@ -77,7 +229,7 @@
     <li>stretch and fold 1 - rest 30 minutes</li>
     <li>stretch and fold 2 - rest 30 minutes</li>
     <li>stretch and fold 3</li>
-    <li>bulk fermentation -  3 - 3.5  hours</li>
+    <li>bulk fermentation - 3 - 3.5 hours</li>
     <li>pre-shape - reset 20 minutes</li>
     <li>final shape + secure bottom seam</li>
     <li>proof for 30 minutes</li>
@@ -87,107 +239,7 @@
     <li>remove lid bake for 30 more minutes</li>
     <li>let cool for at least 1 hour</li>
 </ol>
+Icons made by <a href="https://www.flaticon.com/authors/mangsaabguru" title="mangsaabguru">mangsaabguru</a> from <a
+        href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 </body>
-<script>
-    window.onload = () => {
-        document.querySelectorAll('input[data-type=weights]').forEach((elem) => {
-            elem.onblur = doGramCalculations
-        })
-        document.querySelector('#btnClear').addEventListener("click", function (event) {
-            document.querySelectorAll('input').forEach((elem) => {
-                elem.value = null;
-            });
-            event.preventDefault();
-        })
-        setWeightsInput();
-    }
-    function setPercentsInput() {
-        document.querySelectorAll('input[data-type=weights]').forEach((elem) => {
-            elem.setAttribute('readonly','readonly')
-        })
-    }
-    function setWeightsInput() {
-        document.querySelectorAll('input[data-type=percents]').forEach((elem) => {
-            elem.setAttribute('readonly','readonly')
-        })
-    }
-    // return a Node List
-    function getAllFlourInputs() {
-        return document.querySelectorAll("input[name='flour[]']")
-    }
-
-    function getAllSalt() {
-        return document.querySelectorAll("input[name='salt']")
-    }
-
-    function sumNodeList(myList) {
-        const len = myList.length
-        let sum = 0;
-        for (let i = len; i > 0; i--) {
-            const val = myList[i - 1].value;
-            if (Number.isInteger(parseInt(val)))
-                sum += parseInt(val);
-        }
-        return sum;
-    }
-
-    function getTotalAddedFlour() {
-        return sumNodeList(getAllFlourInputs())
-    }
-
-    function getTotalFlour() {
-        const addedFlour = getTotalAddedFlour();
-        const levainFlour = getLevainPart()
-        const elem = document.querySelector('#totalFlour');
-        elem.value = addedFlour + levainFlour;
-        return addedFlour + levainFlour;
-    }
-
-    function getTotalWater() {
-        let elem = document.querySelector('#water');
-        let addedWater = elem.value;
-        const levainWater = getLevainPart()
-        if (!Number.isInteger(parseInt(addedWater))) {
-            addedWater = 0;
-        } else {
-            addedWater = parseInt(addedWater);
-        }
-        elem = document.querySelector('#totalWater');
-        elem.value = addedWater + levainWater;
-        return addedWater + levainWater;
-    }
-
-    function getLevainPart() {
-        return sumNodeList(document.querySelectorAll("input[name='starter']")) / 2;
-    }
-
-    function updatePercentage(name, totalFlour, decimals = 0) {
-        const name1 = `#${name}`,
-            name2 = `#p${name}`,
-            elem = document.querySelector(name1),
-            elem2 = document.querySelector(name2);
-        if(Number.isInteger(parseInt(elem.value)) ) {
-            elem2.value = parseFloat(parseInt(elem.value) / totalFlour * 100).toFixed(decimals);
-        }
-    }
-
-    function computePercentages(totalFlour) {
-        updatePercentage('mainflour', totalFlour);
-        updatePercentage('addlflour', totalFlour);
-        updatePercentage('water', totalFlour);
-        updatePercentage('salt', totalFlour);
-        updatePercentage('starter', totalFlour);
-    }
-
-    function doGramCalculations() {
-        const totalAddedFlour = getTotalAddedFlour();
-        const totalFlour = getTotalFlour();
-        const totalWater = getTotalWater();
-        computePercentages(totalAddedFlour);
-        updatePercentage('totalWater', totalFlour, 2);
-        const totalWeight = totalFlour + totalWater + sumNodeList(getAllSalt());
-        const elem = document.querySelector('#totalweight');
-        elem.value = totalWeight;
-    }
-</script>
 </html>
