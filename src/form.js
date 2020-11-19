@@ -206,11 +206,7 @@ export default class SourdoughForm {
             this.vwgRow.removeAttribute('hidden');
         }
 
-        // if (on === true) {
-        //     console.log("PROTEIN!");
-        // } else {
-        //     console.log(on);
-        // }
+
         this.doCalculations();
     }
 
@@ -290,7 +286,6 @@ export default class SourdoughForm {
         this.inputFields.pSalt.value = parseFloat(this.sourdough.percentSalt * 100).toFixed(0);
     }
     calculatePercentsFromWeights = () => {
-        console.log('calculatePercentsFromWeights');
         // update main, addl, water, salt and starter
         this.getWeightsFromForm(this.sourdough);
         // update total weight

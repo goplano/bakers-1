@@ -26,10 +26,8 @@ export default class Sourdough {
         this.useVitalWheatGluten = value;
         if(this.useVitalWheatGluten === true) {
             const flourGrams = this.mainFlour;
-            console.log(flourGrams);
             this.mainFlour = this.vwg.flourGrams(flourGrams);
             this.addlFlour = this.vwg.vwgGrams(flourGrams);
-            console.log(this);
         }
         else {
             const flourGrams = this.mainFlour + this.addlFlour;
