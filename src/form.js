@@ -1,28 +1,20 @@
 'use strict'
-
+import Sourdough from "./sourdough";
+import SourdoughPercents from './sourdough_percents'
+/*
+ * This class handles all things related to the form and form fields
+ */
 export default class SourdoughForm {
     allInputFields = null
-// field lists
-//     weightInputs = null;
-//     percentInputs = null;
-//     flourInputs = null;
-//     totalHydrationInput = null;
-//     totalFlourInput = null;
-//     totalWaterInput = null;
+    calcTypes = new Set(['percents', 'weights']);
     computationTypeDiv = null;
-    // waterInput = null;
-    // mainFlourInput = null;
-    // addlFlourInput = null;
-    // saltInput = null;
-    // startInput = null;
-    // pWaterInput = null;
-    // pMainFlourInput = null;
-    // pAddlFlourInput = null;
-    // pSaltInput = null;
-    // pStartInput = null;
+    doCalculations = null;
+    calcType = null;
 // buttons
     clearBtn = null;
     sourdough = null;
+    // input row
+    vwgRow = null;
 // input fields
     inputFields = {
         weights: null,
@@ -64,20 +56,32 @@ export default class SourdoughForm {
         totalWeight: '#totalweight',
         totalHydration: '#pTotalWater',
         clearBtn: '#btnClear',
-        computationTypeDiv: '#computationType'
+        btnPercents: '#btnPercents',
+        btnWeights: '#btnWeights',
+        btnUseVitalWheatGluten: '#btnUseVitalWheatGluten',
+        computationTypeDiv: '#computationType',
+        vwgRow: '#vwg-input-row'
     };
 
-    constructor(sd) {
-        this.sourdough = sd;
+    /*
+     * The constructor finds all of the fields and sets the computation for
+     * getting percentages from weights
+     */
+    constructor() {
+        this.vwgRow = document.querySelector(this.selectors.vwgRow);
 
         this.inputFields.weights = document.querySelectorAll(this.selectors.weights);
         this.inputFields.percents = document.querySelectorAll(this.selectors.percents);
         this.inputFields.flours = document.querySelectorAll(this.selectors.flours);
         this.clearBtn = document.querySelector(this.selectors.clearBtn);
+        this.btnPercents = document.querySelector(this.selectors.btnPercents);
+        this.btnWeights = document.querySelector(this.selectors.btnWeights);
+        this.btnUseVitalWheatGluten = document.querySelector(this.selectors.btnUseVitalWheatGluten);
         this.allInputFields = document.querySelectorAll('input');
 
         this.inputFields.totalFlour = document.querySelector(this.selectors.totalFlour);
         this.inputFields.totalWater = document.querySelector(this.selectors.totalWater);
+        this.inputFields.totalWeight = document.querySelector(this.selectors.totalwWeight);
         this.inputFields.totalWeight = document.querySelector(this.selectors.totalWeight);
         this.inputFields.totalHydration = document.querySelector(this.selectors.totalHydration);
 
@@ -95,9 +99,8 @@ export default class SourdoughForm {
         this.inputFields.pSalt = document.querySelector(this.selectors.pSalt);
         this.inputFields.pStarter = document.querySelector(this.selectors.pStarter);
 
-        this.getWeightsFromForm(sd);
         this.setWeightsInput();
-
+        this.setUseVitalWheatGluten(this.sourdough.useVitalWheatGluten);
     };
 
 
@@ -126,62 +129,168 @@ export default class SourdoughForm {
         return sum;
     };
 
-
-    getWeightsFromForm(sd) {
-        sd.mainFlour = this.getSumOrValue(this.selectors.mainFlour);
-        sd.addlFlour = this.getSumOrValue(this.selectors.addlFlour);
-        sd.water = this.getSumOrValue(this.selectors.water);
-        sd.salt = this.getSumOrValue(this.selectors.salt);
-        sd.starter = this.getSumOrValue(this.selectors.starter);
+    /*
+     *
+     */
+    getWeightsFromForm() {
+        const sd = this.sourdough;
+        sd.mainFlour = isNaN(this.inputFields.mainFlour.value)?0:+this.inputFields.mainFlour.value;
+        sd.addlFlour = isNaN(this.inputFields.addlFlour.value)?0:+this.inputFields.addlFlour.value;
+        sd.water = isNaN(this.inputFields.water.value)?0:+this.inputFields.water.value;
+        sd.salt = isNaN(this.inputFields.salt.value)?0:+this.inputFields.salt.value;
+        sd.starter = isNaN(this.inputFields.starter.value)?0:+this.inputFields.starter.value;
     };
 
+    getPercentsFromForm() {
+        const sd = this.sourdough;
+        sd.totalWeight = this.getSumOrValue(this.selectors.totalWeight);
+        sd.totalHydration = this.getSumOrValue(this.selectors.totalHydration) / 100;
+        sd.percentSalt = this.inputFields.pSalt.value / 100;
+        sd.percentLevain = this.inputFields.pStarter.value / 100;
+    };
 
     setWeightsInput() {
+        if (this.calcType === 'weights') {
+            return;
+        }
+        this.calcType = 'weights';
+        this.sourdough = new Sourdough({
+            mainFlour: this.inputFields.mainFlour.value,
+            addlFlour: this.inputFields.addlFlour.value,
+            water: this.inputFields.water.value,
+            salt: this.inputFields.salt.value,
+            starter: this.inputFields.starter.value
+        });
+        this.makeTotalWeightsReadonly();
+        this.displayComputationTypeGrams()
+        this.makePercentFieldsReadonly();
+        this.doCalculations = this.calculatePercentsFromWeights;
+        this.makeWeightFieldsReadble();
+        this.setUseVitalWheatGluten(this.sourdough.useVitalWheatGluten);
+        this.getWeightsFromForm();
+    };
+
+    makeWeightFieldsReadble() {
+        this.inputFields.weights.forEach((elem) => {
+            this.setReadWrite(elem);
+            elem.addEventListener("blur", this.doCalculations)
+        });
+    }
+
+    makePercentFieldsReadonly() {
+        this.inputFields.percents.forEach((elem) => {
+            this.setReadOnly(elem);
+            elem.removeEventListener("blur", this.calculateWeightsFromPercents)
+        })
+    }
+
+    makeTotalWeightsReadonly() {
         this.setReadOnly(this.inputFields.totalWeight);
         this.setReadOnly(this.inputFields.totalWater);
         this.setReadOnly(this.inputFields.totalFlour);
         this.setReadOnly(this.inputFields.totalHydration);
-        this.setComputationTypeWeights()
-        this.inputFields.percents.forEach((elem) => {
-            this.setReadOnly(elem);
-            // TODO - remove event handler?
-        })
-        this.inputFields.weights.forEach((elem) => {
-            this.setReadWrite(elem);
-            elem.onblur = this.doGramCalculations
-        })
-    };
+    }
 
+    /*
+         * This tells the sourdough object to compute the flour using VWG
+         */
+    setUseVitalWheatGluten(on) {
+        this.sourdough.setuUseVitalWheatGluten(on);
+        this.inputFields.addlFlour.value = this.sourdough.addlFlour;
+        this.inputFields.mainFlour.value = this.sourdough.mainFlour;
+        if (this.sourdough.useVitalWheatGluten !== true) {
+            this.btnUseVitalWheatGluten.removeAttribute('checked');
+            this.vwgRow.setAttribute('hidden', 'hidden');
+        } else {
+            this.btnUseVitalWheatGluten.setAttribute('checked', 'checked');
+            this.vwgRow.removeAttribute('hidden');
+        }
+
+        // if (on === true) {
+        //     console.log("PROTEIN!");
+        // } else {
+        //     console.log(on);
+        // }
+        this.doCalculations();
+    }
 
     setPercentsInput() {
-        this.setComputationTypeGrams();
+        if (this.calcType === 'percents') {
+            return;
+        }
+        this.doCalculations = this.calculateWeightsFromPercents;
+        this.calcType = 'percents';
+        this.sourdough = new SourdoughPercents({
+            totalWeight: this.sourdough.totalWeight,
+            totalHydration: this.sourdough.totalHydration,
+            useVitalWheatGluten: this.sourdough.useVitalWheatGluten
+        });
+        if(this.inputFields.pSalt.value == 0) {
+            this.inputFields.pSalt.value = this.sourdough.percentSalt * 100;
+        }
+        if(this.inputFields.pStarter.value == 0) {
+            this.inputFields.pStarter.value = this.sourdough.percentLevain * 100;
+        }
+        this.displayComputationTypePercentages();
+        this.makeTotalWeightsReadable();
+        this.makePercentageFieldsReadable();
+        this.makeWeightFieldsReadonly();
+        this.getPercentsFromForm(this.sourdough);
+    };
 
-        this.setReadWrite(this.inputFields.totalWeight);
-        this.setReadWrite(this.inputFields.totalWater);
-        this.setReadWrite(this.inputFields.totalFlour);
-        this.setReadWrite(this.inputFields.totalHydration);
-        this.inputFields.percents.forEach((elem) => {
-            this.setReadWrite(elem);
-            elem.onblur = this.doPercentCalculations
-        })
+    makeWeightFieldsReadonly() {
         this.inputFields.weights.forEach((elem) => {
             this.setReadOnly(elem);
+            elem.removeEventListener("blur", this.calculatePercentsFromWeights)
+        });
+    }
+
+    makePercentageFieldsReadable() {
+        const inputFields = [ this.inputFields.pStarter, this.inputFields.pSalt];
+        inputFields.forEach((elem) => {
+            this.setReadWrite(elem);
+            elem.addEventListener("blur", this.doCalculations)
         })
+    }
+
+    makeTotalWeightsReadable() {
+        const inputFields = [ this.inputFields.totalWeight, this.inputFields.totalHydration];
+        inputFields.forEach((elem) => {
+            this.setReadWrite(elem);
+            elem.addEventListener("blur", this.doCalculations)
+        })
+    }
+
+    displayComputationTypePercentages() {
+        this.computationTypeDiv.innerHTML = 'Calculating weights from ';
+
+    }
+
+
+    displayComputationTypeGrams() {
+        this.computationTypeDiv.innerHTML = 'Calculating percentages from ';
     };
 
-
-    setComputationTypeWeights() {
-        this.computationTypeDiv.innerHTML = 'Calculating weights from percentages';
-
-    };
-
-
-    setComputationTypeGrams() {
-        this.computationTypeDiv.innerHTML = 'Calculating percentages from weight';
-    };
-
-
-    doGramCalculations = () =>  {
+    calculateWeightsFromPercents = () => {
+        this.getPercentsFromForm()
+        // update grams
+        this.inputFields.totalFlour.value = this.sourdough.totalFlour;
+        this.inputFields.totalWater.value = this.sourdough.totalWater;
+        this.inputFields.starter.value = this.sourdough.starter;
+        this.inputFields.mainFlour.value = this.sourdough.mainFlour;
+        this.inputFields.addlFlour.value = this.sourdough.addlFlour;
+        this.inputFields.salt.value = this.sourdough.salt;
+        this.inputFields.water.value = this.sourdough.water;
+        // this.inputFields.addlFlour.value = 0;
+        //update individual percentages
+        this.inputFields.pWater.value = parseFloat(this.sourdough.percentWater * 100).toFixed(0);
+        this.inputFields.pMainFlour.value = parseFloat(this.sourdough.percentMainFlour * 100).toFixed(0);
+        this.inputFields.pAddlFlour.value = parseFloat(this.sourdough.percentAddlFlour * 100).toFixed(0);
+        this.inputFields.pStarter.value = parseFloat(this.sourdough.percentStarter * 100).toFixed(0);
+        this.inputFields.pSalt.value = parseFloat(this.sourdough.percentSalt * 100).toFixed(0);
+    }
+    calculatePercentsFromWeights = () => {
+        console.log('calculatePercentsFromWeights');
         // update main, addl, water, salt and starter
         this.getWeightsFromForm(this.sourdough);
         // update total weight
@@ -191,13 +300,13 @@ export default class SourdoughForm {
         // update tot flour
         this.inputFields.totalFlour.value = this.sourdough.totalFlour
         // update total hydration
-        this.inputFields.totalHydration.value =  parseFloat(this.sourdough.totalHydration * 100 ).toFixed(0);
+        this.inputFields.totalHydration.value = parseFloat(this.sourdough.totalHydration * 100).toFixed(0);
         //update individual percentages
-        this.inputFields.pWater.value  = parseFloat(this.sourdough.percentWater * 100 ).toFixed(0);
-        this.inputFields.pMainFlour.value  = parseFloat(this.sourdough.percentMainFlour * 100 ).toFixed(0);
-        this.inputFields.pAddlFlour.value  = parseFloat(this.sourdough.percentAddlFlour * 100 ).toFixed(0);
-        this.inputFields.pStarter.value  = parseFloat(this.sourdough.percentStarter * 100 ).toFixed(0);
-        this.inputFields.pSalt.value  = parseFloat(this.sourdough.percentSalt * 100 ).toFixed(0);
+        this.inputFields.pWater.value = parseFloat(this.sourdough.percentWater * 100).toFixed(0);
+        this.inputFields.pMainFlour.value = parseFloat(this.sourdough.percentMainFlour * 100).toFixed(0);
+        this.inputFields.pAddlFlour.value = parseFloat(this.sourdough.percentAddlFlour * 100).toFixed(0);
+        this.inputFields.pStarter.value = parseFloat(this.sourdough.percentStarter * 100).toFixed(0);
+        this.inputFields.pSalt.value = parseFloat(this.sourdough.percentSalt * 100).toFixed(0);
 
     };
 
@@ -212,5 +321,6 @@ export default class SourdoughForm {
         elem.removeAttribute('readonly')
         elem.removeAttribute('tabindex')
     };
+
 }
 

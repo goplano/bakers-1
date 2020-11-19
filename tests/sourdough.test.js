@@ -26,7 +26,14 @@ test('it can compute levain part sourdough object', ()=> {
     let sd = new Sourdough();
     expect(sd.mainFlour).toBe(0);
     sd.starter = 500;
-    expect(sd.levainPart).toBe(250);
+    expect(sd.levainHydration).toBe(1);
+    expect(sd.levainFlour).toBe(250);
+    expect(sd.levainWater).toBe(250);
+    sd.levainHydration = .6;
+    sd.starter = 100;
+    expect(sd.starter).toBe(100);
+    expect(sd.levainFlour).toBe(62.5);
+    expect(sd.levainWater).toBe(37.5);
 })
 test('it can compute total flour, total water, total weight', ()=> {
     let sd = new Sourdough();

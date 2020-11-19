@@ -70,43 +70,6 @@ const sampleHTML = `
     `;
 
 
-test('can find all html elements on initialize', () => {
-    document.body.innerHTML = sampleHTML;
-    const form =  new SourdoughForm();
-    expect(form.inputFields.weights.length).toBe(5);
-    expect(form.inputFields.percents.length).toBe(5);
-    const percentElement = form.inputFields.percents[0];
-    expect(percentElement.getAttribute('data-type')).toBe('percents')
-    const weightElement = form.inputFields.weights[0];
-    expect(weightElement.getAttribute('data-type')).toBe('weights')
-    expect(form.inputFields.flours.length).toBe(2)
-})
-test('it can sum flour values', () => {
-    document.body.innerHTML = sampleHTML;
-    const form =  new SourdoughForm();
-    expect(form.getSumOrValue(form.inputFields.flours)).toBe(600);
-})
-test('it can sum input values even if empty', () => {
-    document.body.innerHTML = sampleHTML;
-    const form =  new SourdoughForm();
-    expect(form.getSumOrValue(form.inputFields.weights)).toBe(1060);
-})
-test('it can clear values on the form', () => {
-    document.body.innerHTML = sampleHTML;
-    const form =  new SourdoughForm();
-    expect(form.getSumOrValue(form.inputFields.weights)).toBe(1060);
-    form.clearInputs(form.allInputFields);
-    expect(form.getSumOrValue(form.inputFields.weights)).toBe(0);
-})
-test('initialization will populate the sourdough values',() => {
-    document.body.innerHTML = sampleHTML;
-    const form =  new SourdoughForm();
-    expect(form.sourdough.mainFlour).toBe(600);
-    expect(form.sourdough.addlFlour).toBe(0);
-    expect(form.sourdough.water).toBe(300);
-    expect(form.sourdough.salt).toBe(10);
-    expect(form.sourdough.starter).toBe(150);
-})
 test('gram calculations will update totals fields',() => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm();
@@ -119,17 +82,22 @@ test('gram calculations will update totals fields',() => {
 test('you can switch to percentage to calculate weights',() => {
     document.body.innerHTML = sampleHTML;
     const form =  new SourdoughForm();
-
     form.setPercentsInput();
+
+
     expect(form.inputFields.totalWeight.getAttribute('readonly')).not.toBe('readonly')
     expect(form.inputFields.totalHydration.getAttribute('readonly')).not.toBe('readonly')
 
+    form.sourdough.percentLevain = .22222222;
+    form.inputFields.totalWeight.value =  "1060";
+    form.inputFields.totalHydration.value =  "56";
+
     form.doCalculations();
 
-    // expect(form.inputFields.totalFlour.value).toBe("675");
-    // expect(form.inputFields.totalWater.value).toBe("375");
-    // expect(form.inputFields.totalWeight.value).toBe("1060");
-    // expect(form.inputFields.totalHydration.value).toBe("56");
+    expect(form.inputFields.totalFlour.value).toBe("679");
+    expect(form.inputFields.totalWater.value).toBe("381");
+    expect(form.inputFields.totalWeight.value).toBe("1060");
+    expect(form.inputFields.starter.value).toBe("151");
 
     // form.setPercentsInput();
     // // weight inputs should be readonly
@@ -158,15 +126,15 @@ test('you can switch to percentage to calculate weights',() => {
     // expect(form.computationTypeDiv.innerHTML).toBe('Calculating percentages from weight')
 
 })
- test('it will skip over non-numeric values',() => {
-     document.body.innerHTML = sampleHTML;
-     const form =  new SourdoughForm();
-     form.inputFields.mainFlour.value = "twelve"
-     form.inputFields.addlFlour.value = "100"
-     form.inputFields.starter.value = "yeast"
-     form.doCalculations();
-     expect(form.inputFields.totalFlour.value).toBe("100");
- })
+test('it will skip over non-numeric values',() => {
+    document.body.innerHTML = sampleHTML;
+    const form =  new SourdoughForm();
+    form.setPercentsInput();
+    form.inputFields.totalWeight.value = "twelve"
+    form.inputFields.totalHydration.value = "six"
+    form.doCalculations();
+    expect(form.inputFields.mainFlour.value).toBe("0");
+})
 test('it will do weights based on percentages', () => {
 
 })
