@@ -1,10 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: 'development',
-    watch: true,
+    watch: false,
     entry: './src/index.js',
     module: {
         rules: [{
@@ -46,13 +47,12 @@ module.exports = {
         new ScriptExtHtmlWebpackPlugin({
             // sync: 'first.js',
             defaultAttribute: 'async'
-        })
-    ],
-    devServer: {
-        contentBase: path.join(__dirname, 'dist'),
-        index: 'index.html', liveReload: true,
-        hotOnly: true,
-        compress: true,
-        port: 8000
-    }
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: "src/images", to: "." },
+                { from: "src/site.webmanifest", to: "." },
+            ],
+        }),
+    ]
 };
