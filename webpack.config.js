@@ -4,7 +4,7 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 
 module.exports = {
     mode: 'development',
-    watch: false,
+    watch: true,
     entry: './src/index.js',
     module: {
         rules: [{
@@ -17,7 +17,20 @@ module.exports = {
                         {'plugins': ['@babel/plugin-proposal-class-properties']}]
                 }
             }
-        }
+        },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1
+                        }
+                    },
+                    'postcss-loader'
+                ]
+            }
         ],
     },
     output: {
@@ -34,5 +47,12 @@ module.exports = {
             // sync: 'first.js',
             defaultAttribute: 'async'
         })
-    ]
+    ],
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        index: 'index.html', liveReload: true,
+        hotOnly: true,
+        compress: true,
+        port: 8000
+    }
 };

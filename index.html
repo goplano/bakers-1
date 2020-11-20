@@ -9,237 +9,120 @@
     <link rel="manifest" href="./site.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <style>
-        body {
-            color: #eee;
-            background-color: darkslategray;
-            font-family: 'Roboto', cursive;
-            font-size: 18px;
-        }
-
-        input {
-            width: 4em;
-            border-style: none;
-            border-radius: 4px;
-        }
-
-        input[readonly=readonly] {
-            background-color: #ddd;
-            border-color: #ddd;
-            border-style: none;
-            border-radius: 4px;
-        }
-
-        label {
-            width: 7em;
-            display: inline-block;
-            font-size: 16px;
-        }
-
-        td label {
-            display: inline;
-            width: auto;
-        }
-
-        button {
-            font-family: 'Roboto', cursive;
-            border-radius: 4px;
-            border: none;
-            background-color: darkslategray;
-            color: #eee;
-            padding: 3px 4px;
-            box-shadow: 2px 2px 3px #c2c6c9,
-            -2px -2px 6px #ffffff;
-        }
-        .toggle {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 62px;
-            height: 32px;
-            display: inline-block;
-            position: relative;
-            border-radius: 50px;
-            overflow: hidden;
-            outline: none;
-            border: none;
-            cursor: pointer;
-            background-color: #707070;
-            transition: background-color ease 0.3s;
-        }
-
-        .toggle:before {
-            content: "yes  no";
-            display: block;
-            position: absolute;
-            z-index: 2;
-            width: 28px;
-            height: 28px;
-            background: #fff;
-            left: 2px;
-            top: 2px;
-            border-radius: 50%;
-            font: 10px/28px Helvetica;
-            /*text-transform: uppercase;*/
-            font-weight: bold;
-            text-indent: -22px;
-            word-spacing: 37px;
-            color: #fff;
-            text-shadow: -1px -1px rgba(0,0,0,0.15);
-            white-space: nowrap;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-        }
-
-        .toggle:checked {
-            background-color: #4CD964;
-        }
-
-        .toggle:checked:before {
-            left: 32px;
-        }
-        .switch-field {
-            display: flex;
-
-            overflow: hidden;
-        }
-
-        .switch-field input {
-            position: absolute !important;
-            clip: rect(0, 0, 0, 0);
-            height: 1px;
-            width: 1px;
-            border: 0;
-            overflow: hidden;
-        }
-
-        .switch-field label {
-            background-color: #e4e4e4;
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 14px;
-            line-height: 1;
-            text-align: center;
-            padding: 8px 16px;
-            margin-right: -1px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
-            transition: all 0.1s ease-in-out;
-        }
-
-        .switch-field label:hover {
-            cursor: pointer;
-        }
-
-        .switch-field input:checked + label {
-            background-color: #a5dc86;
-            box-shadow: none;
-        }
-
-        .switch-field label:first-of-type {
-            border-radius: 4px 0 0 4px;
-        }
-
-        .switch-field label:last-of-type {
-            border-radius: 0 4px 4px 0;
-        }
-    </style>
 </head>
-<body>
-<p>Weights in grams</p>
+<body class="bg-gray-50  text-gray-800 ">
 
-<span id="computationType">Not set</span>
-<div class="switch-field">
-    <input type="radio" id="btnWeights" name="calctype" value="weights" checked/>
-    <label for="btnWeights">Weights</label>
-    <input type="radio" id="btnPercents" name="calctype" value="percents" />
-    <label for="btnPercents">Percents</label>
+<div class="container mx-auto bg-white p-4 flex flex-col">
+    <h1 class="text-lg uppercase ">Sourdough Bread</h1>
+    <div>
+        <div id="calctype" class="flex items-center">
+            <div class="flex-initial">
+                <span id="computationType">Not set</span>
+            </div>
+            <div class="switch-field flex-initial pl-4">
+                <input type="radio" id="btnWeights" name="calctype" value="weights" checked/>
+                <label for="btnWeights">Weights</label>
+                <input type="radio" id="btnPercents" name="calctype" value="percents"/>
+                <label for="btnPercents">Percents</label>
+            </div>
+        </div>
+        <form action="#" onsubmit="return false;" class="p-1 m-4">
+            <div class="flex items-center my-2">
+                <span id="math">
+                <input type="text" name="totalWater" id="totalWater" class="text-center"> water /
+                <input type="text" name="totalFlour" id="totalFlour" class="text-center"> flour =
+                    </span>
+                <input type="text" name="pTotalWater" id="pTotalWater" class="text-center"> % hydration
+            </div>
+            <div class="my-2">
+                <label for="totalweight">Total weight: </label>
+                <input type="text" name="totalweight" id="totalweight" class="">
+            </div>
+
+            <table class="border-4 rounded bg-blue-100">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Grams</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-type="flour">
+                    <td><label for="mainflour"></label>flour</td>
+                    <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
+                    <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents"
+                                                               name="pflour[]">
+                    </td>
+                </tr>
+                <tr id="vwg-input-row">
+                    <td><label for="addlflour">VWG</label></td>
+                    <td><input type="text" id="addlflour" data-type="" name="flour[]" readonly="readonly"></td>
+                    <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents"
+                                                               name="pflour[]">
+                    </td>
+                </tr>
+                <tr data-type="water">
+                    <td><label for="water">water</label></td>
+                    <td><input type="text" id="water" data-type="weights" name="water"></td>
+                    <td><label for="pwater"></label><input type="text" id="pwater" data-type="percents" name="pwater">
+                    </td>
+                </tr>
+                <tr data-type="salt">
+                    <td><label for="salt">salt</label></td>
+                    <td><input type="text" id="salt" data-type="weights" name="salt"></td>
+                    <td><label for="psalt"></label><input type="text" id="psalt" data-type="percents" name="psalt"></td>
+                </tr>
+                <tr data-type="starter">
+                    <td><label for="starter">starter</label></td>
+                    <td><input type="text" id="starter" data-type="weights" name="starter"></td>
+                    <td><label for="pstarter"></label><input data-type="percents" id="pstarter" name="pstarter"
+                                                             type="text">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="text-sm">
+                * Assumes 100% hydration starter
+            </p>
+        </form>
+        <div id="vwg-switch" class="flex items-center">
+            <input id="btnUseVitalWheatGluten" class="toggle" type="checkbox" name="vwg"/>
+            <label for="btnUseVitalWheatGluten" title="Vital wheat gluten adds protein and a little more structure."
+                   class="pl-2">Use
+                Vital Wheat Gluten</label>
+        </div>
+
+
+    </div>
+    <div class="">
+        <summary>Instructions</summary>
+        <ol class="list-decimal list-inside p-4">
+            <li>mix flour and water - rest 30 mins</li>
+            <li>mix in starter - rest 30 minutes</li>
+            <li>mix in salt - rest 30 minutes</li>
+            <li>stretch and fold 1 - rest 30 minutes</li>
+            <li>stretch and fold 2 - rest 30 minutes</li>
+            <li>stretch and fold 3</li>
+            <li>bulk fermentation - 3 - 3.5 hours</li>
+            <li>pre-shape - reset 20 minutes</li>
+            <li>final shape + secure bottom seam</li>
+            <li>proof for 30 minutes</li>
+            <li>retard in fridge - 16 hours</li>
+            <li>pre-heat oven to 500</li>
+            <li>bake lid on 25 minutes</li>
+            <li>remove lid bake for 25 more minutes @450</li>
+            <li>let cool for at least 3 hours</li>
+        </ol>
+    </div>
+    <footer>
+        <p class="text-sm text-gray-200">
+            Icons made by <a href="https://www.flaticon.com/authors/mangsaabguru" title="mangsaabguru">mangsaabguru</a>
+            from
+            <a
+                    href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+        </p>
+    </footer>
 </div>
-<form action="#" onsubmit="return false;">
-    <div>
-        <label for="totalweight">Total weight: </label>
-        <input type="text" name="totalweight" id="totalweight">
-    </div>
-    <div>
-        <label for="pTotalWater">Total hydration: </label>
-        <input type="text" name="pTotalWater" id="pTotalWater">
-    </div>
-    <div>
-        <label for="totalFlour">Total flour: </label>
-        <input type="text" name="totalFlour" id="totalFlour">
-    </div>
-    <div>
-        <label for="totalWater">Total water: </label>
-        <input type="text" name="totalWater" id="totalWater">
-    </div>
-
-    <table>
-        <thead>
-        <tr>
-            <td>Ingredient</td>
-            <td>Grams</td>
-            <td>%</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr data-type="flour">
-            <td><label for="mainflour"></label>flour</td>
-            <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
-            <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents" name="pflour[]">
-            </td>
-        </tr>
-        <tr id="vwg-input-row">
-            <td><label for="addlflour">VWG</label></td>
-            <td><input type="text" id="addlflour" data-type="weights" name="flour[]"></td>
-            <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents" name="pflour[]">
-            </td>
-        </tr>
-        <tr data-type="water">
-            <td><label for="water">water</label></td>
-            <td><input type="text" id="water" data-type="weights" name="water"></td>
-            <td><label for="pwater"></label><input type="text" id="pwater" data-type="percents" name="pwater"></td>
-        </tr>
-        <tr data-type="salt">
-            <td><label for="salt">salt</label></td>
-            <td><input type="text" id="salt" data-type="weights" name="salt"></td>
-            <td><label for="psalt"></label><input type="text" id="psalt" data-type="percents" name="psalt"></td>
-        </tr>
-        <tr data-type="starter">
-            <td><label for="starter">starter</label></td>
-            <td><input type="text" id="starter" data-type="weights" name="starter"></td>
-            <td><label for="pstarter"></label><input data-type="percents" id="pstarter" name="pstarter" type="text">
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <p>
-        * Assumes 100% hydration starter
-    </p>
-
-</form>
-<div>
-    <input id="btnUseVitalWheatGluten" class="toggle" type="checkbox" name="vwg" />
-    <label for="btnUseVitalWheatGluten" title="Vital wheat gluten adds protein and a little more structure.">Use Vital Wheat Gluten</label>
-</div>
-
-<h1>Instructions</h1>
-<ol>
-    <li>mix flour and water - rest 30 mins</li>
-    <li>mix in starter - rest 30 minutes</li>
-    <li>mix in salt - rest 30 minutes</li>
-    <li>stretch and fold 1 - rest 30 minutes</li>
-    <li>stretch and fold 2 - rest 30 minutes</li>
-    <li>stretch and fold 3</li>
-    <li>bulk fermentation - 3 - 3.5 hours</li>
-    <li>pre-shape - reset 20 minutes</li>
-    <li>final shape + secure bottom seam</li>
-    <li>proof for 30 minutes</li>
-    <li>retard in fridge - 16 hours</li>
-    <li>pre-heat oven to 500</li>
-    <li>bake lid on 30 minutes</li>
-    <li>remove lid bake for 30 more minutes</li>
-    <li>let cool for at least 1 hour</li>
-</ol>
-Icons made by <a href="https://www.flaticon.com/authors/mangsaabguru" title="mangsaabguru">mangsaabguru</a> from <a
-        href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 </body>
 </html>

@@ -88,16 +88,16 @@ test('you can switch to percentage to calculate weights',() => {
     expect(form.inputFields.totalWeight.getAttribute('readonly')).not.toBe('readonly')
     expect(form.inputFields.totalHydration.getAttribute('readonly')).not.toBe('readonly')
 
-    form.sourdough.percentLevain = .22222222;
+    form.sourdough.percentLevain = .22  ;
     form.inputFields.totalWeight.value =  "1060";
     form.inputFields.totalHydration.value =  "56";
-
+    form.sourdough.percentLevain = .22;
     form.doCalculations();
 
     expect(form.inputFields.totalFlour.value).toBe("679");
     expect(form.inputFields.totalWater.value).toBe("381");
     expect(form.inputFields.totalWeight.value).toBe("1060");
-    expect(form.inputFields.starter.value).toBe("151");
+    expect(form.inputFields.starter.value).toBe("149");
 
     // form.setPercentsInput();
     // // weight inputs should be readonly

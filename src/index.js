@@ -1,4 +1,5 @@
 import SourdoughForm  from '../src/form'
+import css from './css/styles.css'
 
 window.onload = () => {
     const form = new SourdoughForm();
@@ -21,5 +22,6 @@ window.onload = () => {
     form.setWeightsInput();
     window.form = form;
 }
+
 
 
