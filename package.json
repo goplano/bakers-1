@@ -25,6 +25,7 @@
     "autoprefixer": "^10.0.2",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^6.3.2",
     "css-loader": "^5.0.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.3.0",

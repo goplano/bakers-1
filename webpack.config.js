@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: 'development',
@@ -46,6 +47,13 @@ module.exports = {
         new ScriptExtHtmlWebpackPlugin({
             // sync: 'first.js',
             defaultAttribute: 'async'
-        })
-    ],
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: "src/images", to: "." },
+                { from: "src/site.webmanifest", to: "." },
+            ],
+        }),
+    ]
+
 };
