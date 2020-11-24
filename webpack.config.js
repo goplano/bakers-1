@@ -23,7 +23,6 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
                     {
                         loader: MiniCssExtractPlugin.loader,
                     },
@@ -45,11 +44,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Sourdough Hydration',
-            // Load a custom template (lodash by default)
             template: 'index.html',
         }),
         new ScriptExtHtmlWebpackPlugin({
-            // sync: 'first.js',
             defaultAttribute: 'async'
         }),
         new CopyPlugin({
