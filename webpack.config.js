@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
@@ -23,6 +24,9 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     'style-loader',
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
                     {
                         loader: 'css-loader',
                         options: {
@@ -53,6 +57,10 @@ module.exports = {
                 { from: "src/images", to: "." },
                 { from: "src/site.webmanifest", to: "." },
             ],
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].bundle.css',
+            chunkFilename: '[id].css'
         }),
     ]
 
