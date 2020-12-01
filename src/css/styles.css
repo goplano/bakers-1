@@ -17,7 +17,7 @@ input {
     width: 4em;
     border-style: none;
     border-radius: 4px;
-    @apply text-right px-2 ring-2 mx-1;
+    @apply text-right px-2 border-solid border-2 border-black   mx-1;
 }
 
 input[readonly=readonly] {
@@ -135,6 +135,9 @@ input[readonly=readonly] {
 
 .switch-field label:last-of-type {
     border-radius: 0 4px 4px 0;
+}
+#math {
+    display: none;
 }
 @media print {
     #calctype, #vwg-switch, #math {
