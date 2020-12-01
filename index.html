@@ -13,8 +13,9 @@
     <meta property="og:image" content="https://calc.suesucia.com/android-chrome-512x512.png">
     <meta property="og:url" content="https://calc.suesucia.com/">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="website"/>
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta property="description" content="Simple sourdough hydration calculator"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" async>
 </head>
 <body class="bg-gray-50  text-gray-800 ">
@@ -24,71 +25,80 @@
     <div>
         <div id="calctype" class="flex items-center">
             <div class="flex-initial">
-                <span id="computationType">Not set</span>
+                Start with
             </div>
-            <div class="switch-field flex-initial pl-4">
+            <div class="switch-field flex-initial px-4">
                 <input type="radio" id="btnWeights" name="calctype" value="weights" checked/>
-                <label for="btnWeights">Weights</label>
+                <label for="btnWeights">g</label>
                 <input type="radio" id="btnPercents" name="calctype" value="percents"/>
-                <label for="btnPercents">Percents</label>
+                <label for="btnPercents">%</label>
+            </div>
+            <div class="flex-initial">
+                <span id="computationType">Not set</span>
             </div>
         </div>
         <form action="#" onsubmit="return false;" class="p-1 m-4">
+            <div class="my-2">
+                <label for="totalweight">Total weight: </label>
+                <input type="text" name="totalweight" id="totalweight" class="">
+            </div>
             <div class="flex items-center my-2">
                 <span id="math">
                 <input type="text" name="totalWater" id="totalWater" class="text-center"> water /
                 <input type="text" name="totalFlour" id="totalFlour" class="text-center"> flour =
                     </span>
-                <input type="text" name="pTotalWater" id="pTotalWater" class="text-center"> % hydration
-            </div>
-            <div class="my-2">
-                <label for="totalweight">Total weight: </label>
-                <input type="text" name="totalweight" id="totalweight" class="">
+                <label for="pTotalWater">Hydration: </label>
+                <input type="text" name="pTotalWater" id="pTotalWater" class="text-center"> %
             </div>
 
-            <table class="border-4 rounded bg-blue-100">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Grams</th>
-                    <th>%</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr data-type="flour">
-                    <td><label for="mainflour"></label>flour</td>
-                    <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
-                    <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents"
-                                                               name="pflour[]">
-                    </td>
-                </tr>
-                <tr id="vwg-input-row">
-                    <td><label for="addlflour">VWG</label></td>
-                    <td><input type="text" id="addlflour" data-type="" name="flour[]" readonly="readonly"></td>
-                    <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents"
-                                                               name="pflour[]">
-                    </td>
-                </tr>
-                <tr data-type="water">
-                    <td><label for="water">water</label></td>
-                    <td><input type="text" id="water" data-type="weights" name="water"></td>
-                    <td><label for="pwater"></label><input type="text" id="pwater" data-type="percents" name="pwater">
-                    </td>
-                </tr>
-                <tr data-type="salt">
-                    <td><label for="salt">salt</label></td>
-                    <td><input type="text" id="salt" data-type="weights" name="salt"></td>
-                    <td><label for="psalt"></label><input type="text" id="psalt" data-type="percents" name="psalt"></td>
-                </tr>
-                <tr data-type="starter">
-                    <td><label for="starter">starter</label></td>
-                    <td><input type="text" id="starter" data-type="weights" name="starter"></td>
-                    <td><label for="pstarter"></label><input data-type="percents" id="pstarter" name="pstarter"
-                                                             type="text">
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="bg-yellow-300 border-2 rounded p-4 flex justify-center" >
+
+                <table class="table-auto">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Grams</th>
+                        <th>%</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-type="flour">
+                        <td><label for="mainflour"></label>flour</td>
+                        <td><input type="text" id="mainflour" data-type="weights" name="flour[]"></td>
+                        <td><label for="pmainflour"></label><input type="text" id="pmainflour" data-type="percents"
+                                                                   name="pflour[]">
+                        </td>
+                    </tr>
+                    <tr id="vwg-input-row">
+                        <td><label for="addlflour">VWG</label></td>
+                        <td><input type="text" id="addlflour" data-type="" name="flour[]" readonly="readonly"></td>
+                        <td><label for="paddlflour"></label><input type="text" id="paddlflour" data-type="percents"
+                                                                   name="pflour[]">
+                        </td>
+                    </tr>
+                    <tr data-type="water">
+                        <td><label for="water">water</label></td>
+                        <td><input type="text" id="water" data-type="weights" name="water"></td>
+                        <td><label for="pwater"></label><input type="text" id="pwater" data-type="percents"
+                                                               name="pwater">
+                        </td>
+                    </tr>
+                    <tr data-type="salt">
+                        <td><label for="salt">salt</label></td>
+                        <td><input type="text" id="salt" data-type="weights" name="salt"></td>
+                        <td><label for="psalt"></label><input type="text" id="psalt" data-type="percents" name="psalt">
+                        </td>
+                    </tr>
+                    <tr data-type="starter">
+                        <td><label for="starter">starter</label></td>
+                        <td><input type="text" id="starter" data-type="weights" name="starter"></td>
+                        <td><label for="pstarter"></label><input data-type="percents" id="pstarter" name="pstarter"
+                                                                 type="text">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             <p class="text-sm">
                 * Assumes 100% hydration starter
             </p>

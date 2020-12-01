@@ -258,13 +258,13 @@ export default class SourdoughForm {
     }
 
     displayComputationTypePercentages() {
-        this.computationTypeDiv.innerHTML = 'Calculating weights from ';
+        this.computationTypeDiv.innerHTML = ' to calculate weights ';
 
     }
 
 
     displayComputationTypeGrams() {
-        this.computationTypeDiv.innerHTML = 'Calculating percentages from ';
+        this.computationTypeDiv.innerHTML = ' to calculate percentages ';
     };
 
     calculateWeightsFromPercents = () => {
